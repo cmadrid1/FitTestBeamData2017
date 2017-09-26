@@ -12,7 +12,6 @@
 #include <cmath>
 #include <cstdio>
 #include <vector>
-#include "FitTestBeam.h"
 #include "SPEfunc.h"
 
 //This function fits the SiPM MIP distribution
@@ -219,7 +218,6 @@ void fitSPEMIP(TH1* hfit, int run)
     fit5->SetParameter(12, fit4->GetParameter(12));
     fit5->SetParameter(13, fit4->GetParameter(13));
     hfit->Fit(fit5, "RNQ", "", fit3->GetParameter(2)-20, fit4->GetParameter(2)+5000);
-
     
     ///printf("Chi^2:%10.4f Gain:%10.4f Unc:%10.4f MPV:%10.4f Unc:%10.4f", fit5->GetChisquare(), fit5->GetParameter(6), fit5->GetParError(6), fit5->GetParameter(10), fit5->GetParError(10));
     ///printf("  Run: %i Hname: %s\n",run, hfit->GetName());
@@ -249,9 +247,7 @@ void fitSPEMIP(TH1* hfit, int run)
     fit6->FixParameter(8,  fit5->GetParameter(8));
     fit6->FixParameter(9,  fit5->GetParameter(9));
 
-    FitTestBeam fitFunc;
-
-    TF1* fit7 = new TF1("Lang", fitFunc.langaufun, 0.0, 100000.0, 4);
+    TF1* fit7 = new TF1("Lang", langaufun, 0.0, 100000.0, 4);
     fit7->FixParameter(0,  fit5->GetParameter(12));
     fit7->FixParameter(1,  fit5->GetParameter(11));
     fit7->FixParameter(2,  fit5->GetParameter(10));
@@ -341,7 +337,7 @@ int main()
     //char fname[] = "theFile.root";
 
     //char fname[] = "muonHBRuns.root";
-    char fname[] = "analysis_run00%i_EMAP_AC07_01SEP2017_Phase1_HB.root";
+    char fname[] = "../MipCalibration/analysis_run00%i_EMAP_AC07_01SEP2017_Phase1_HB.root";
     //char fname[] = "analysis_run%i_EMAP_AC07_17SEP2017_Phase1_HB_B904.root";
     //char fname[] = "analysis_run00%i_EMAP-6SEP2017_HBHE.root";
     
