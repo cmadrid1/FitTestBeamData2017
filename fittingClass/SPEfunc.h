@@ -62,7 +62,7 @@ Double_t langaufun(Double_t *x, Double_t *par) {
   const Double_t mpshift  = -0.22278298;       // Landau maximum location
 
   // Control constants
-  const Double_t np = 100.0;      // number of convolution steps
+  const Double_t np = 200.0;      // number of convolution steps
   const Double_t sc =   5.0;      // convolution extends to +-sc Gaussian sigmas
 
   // Variables
