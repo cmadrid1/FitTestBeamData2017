@@ -218,18 +218,21 @@ class PPEFunc
     }
     funcs[16]->SetParameters(p[3],    0.0, p[4]);
     
-    //find bin edges 
+    //find bin edges
     int iBin = h->FindBin(x[0]-p[2]);
     double ll = h->GetBinLowEdge(iBin);
     double ul = ll + h->GetBinWidth(iBin);
 
     //calculate contribution to bin of interest from each sub-function
-    double g = funcs[0]->Integral(ll, ul)/(ul - ll);
+    //double g = funcs[0]->Integral(ll, ul)/(ul - ll);
+    double g = funcs[0]->Eval(x[0]-p[2]);
     for(i = 1; i < nPeaks_+1; i++){
       //std::string gnum = "g" + std::to_string(i);
-      g += sc[i] * funcs[i]->Integral(ll, ul)/(ul - ll);
+      //g += sc[i] * funcs[i]->Integral(ll, ul)/(ul - ll);
+      g += sc[i] * funcs[i]->Eval(x[0]-p[2]);
     }
-    g += funcs[i]->Integral(ll, ul)/(ul - ll);
+    //g += funcs[i]->Integral(ll, ul)/(ul - ll);
+    g += funcs[i]->Eval(x[0]-p[2]);
     
     return g;
   }
@@ -239,6 +242,7 @@ class PPEFunc
   {
     /*
       parameters
+      p[2]  : Overall Shift (avg. pedestal)
       p[10] : Total MIP peak area
       p[11] : Most probable value of Landau
       p[12] : Landau width parameter
@@ -251,16 +255,17 @@ class PPEFunc
     double ul = ll + h->GetBinWidth(iBin);
 
     //calculate pedestal, photoelectron, and background contribution
-    double ppe = ppeFunc(x, p);
+    //double ppe = ppeFunc(x, p);
 
     //set mip parameters
     funcMIP->SetParameters(p[12], p[11], p[10], p[13]);
     
     //calculate MIP peak contribution
     //double mip = funcMIP->Integral(ll, ul)/(ul - ll);
-    double mip = funcMIP->Eval(x[0]);
+    double mip = funcMIP->Eval(x[0]-p[2]);
     //return bin value
-    return ppe + mip;
+    //return ppe + mip;
+    return mip;
   }
 
   double operator()(double* x, double* p){
