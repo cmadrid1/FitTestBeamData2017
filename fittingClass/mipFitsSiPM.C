@@ -30,7 +30,7 @@ void fitSPEMIP(TH1* hfit, int run)
     //hfit->SetMaximum(200);
     
     char ffname[128];
-    double nPeaks = 10;
+    double nPeaks = 15;
     
     PPEFunc background(nPeaks,false);
     background.h = hfit;
@@ -40,18 +40,18 @@ void fitSPEMIP(TH1* hfit, int run)
                                                        //////////////Parameter Info////////////////////////////////
     double min0  =    10; double max0  =    3000;      //p[0]  : pedestal amplitude-------------//               //
     double min1  =   0.1; double max1  =     3.9;      //p[1]  : pedestal width-----------------//               //
-    double min2  =    45; double max2  =     150;      //p[2]  : Overall Shift------------------//(avg. pedestal)//
+    double min2  =    45; double max2  =     200;      //p[2]  : Overall Shift------------------//(avg. pedestal)//
     double min3  =     0; double max3  =    1000;      //p[3]  : background amplidude-----------//               //
     double min4  =     0; double max4  =    1000;      //p[4]  : background width---------------//               //
-    double min5  =  1000; double max5  =   30000;      //p[5]  : overall PE amplitude ----------//               //
+    double min5  =  1000; double max5  =   50000;      //p[5]  : overall PE amplitude ----------//               //
     double min6  = 0.001; double max6  =    0.09;      //p[6]  : poisson mean number of PE------//               //
-    double min7  =    10; double max7  =      55;      //p[7]  : PE peak spacing----------------//(Gain)         //
+    double min7  =    10; double max7  =      60;      //p[7]  : PE peak spacing----------------//(Gain)         //
     double min8  = 0.001; double max8  =     4.9;      //p[8]  : PE peak width------------------//               //
     double min9  =  0.01; double max9  =    0.95;      //p[9]  : pixel cross-talk probability---//               //
-    double min10 =   100; double max10 =   50000;      //p[10] : Total MIP peak area------------//               //
-    double min11 =    90; double max11 =    2000;      //p[11] : Most probable value of Landau--//(MPV)          //
-    double min12 =     1; double max12 =     100;      //p[12] : Landau width parameter---------//               //
-    double min13 =     1; double max13 =     170;      //p[13] : gaussian width-----------------//               //
+    double min10 =   100; double max10 =  200000;      //p[10] : Total MIP peak area------------//               //
+    double min11 =    90; double max11 =    2500;      //p[11] : Most probable value of Landau--//(MPV)          //
+    double min12 =     1; double max12 =     150;      //p[12] : Landau width parameter---------//               //
+    double min13 =     1; double max13 =     200;      //p[13] : gaussian width-----------------//               //
     double set0  =   115;                              ////////////////////////////////////////////////////////////
     double set1  =     1;
     double set2  =    60;
@@ -59,11 +59,11 @@ void fitSPEMIP(TH1* hfit, int run)
     double set4  =     1;
     double set5  = 20000;
     double set6  =  0.02;
-    double set7  =    30;
+    double set7  =    45;
     double set8  =   1.0;
     double set9  =   0.4;
     double set10 =   200;
-    double set11 =   100;
+    double set11 =  1000;
     double set12 =    50;
     double set13 =   100;
     
@@ -101,7 +101,7 @@ void fitSPEMIP(TH1* hfit, int run)
     hfit->Fit(fit1, "RQML", "", 20, 110);
     fit1->SetLineColor(kRed);
     fit1->SetLineWidth(2);
-    fit1->Draw("same");
+    //fit1->Draw("same");
     
     //fit PE Peaks 
     sprintf(ffname, "sff2%s", hfit->GetName());
@@ -137,7 +137,7 @@ void fitSPEMIP(TH1* hfit, int run)
     hfit->Fit(fit2, "RQML", "", fit1->GetParameter(2), 400);
     fit2->SetLineColor(kGray);
     fit2->SetLineWidth(2);
-    fit2->Draw("same");
+    //fit2->Draw("same");
     
     //Fine tune PE peaks
     sprintf(ffname, "sff3%s", hfit->GetName());
@@ -175,7 +175,7 @@ void fitSPEMIP(TH1* hfit, int run)
     hfit->Fit(fit3, "RQML", "", fit2->GetParameter(2), 400);
     fit3->SetLineColor(kBlue);
     fit3->SetLineWidth(2);
-    fit3->Draw("same");
+    //fit3->Draw("same");
     
     //Fit MIP peak
     sprintf(ffname, "sff4%s", hfit->GetName());
@@ -211,7 +211,7 @@ void fitSPEMIP(TH1* hfit, int run)
     hfit->Fit(fit4, "RQML", "", fit3->GetParameter(2), 2500);
     fit4->SetLineColor(kOrange);
     fit4->SetLineWidth(2);
-    fit4->Draw("same");
+    //fit4->Draw("same");
     
     //Fine Tunning All Fit
     sprintf(ffname, "sff4%s", hfit->GetName());
@@ -243,7 +243,7 @@ void fitSPEMIP(TH1* hfit, int run)
     fit5->SetParameter(8,  fit4->GetParameter(8));
     fit5->SetParameter(9,  fit4->GetParameter(9));
     fit5->SetParameter(10, fit4->GetParameter(10));
-    fit5->SetParameter(11, fit4->GetParameter(11));
+    fit5->SetParameter(11, fit4->GetParameter(11)); 
     fit5->SetParameter(12, fit4->GetParameter(12));
     fit5->SetParameter(13, fit4->GetParameter(13));
     hfit->Fit(fit5, "RQML", "", fit4->GetParameter(2), 2500);
@@ -251,14 +251,14 @@ void fitSPEMIP(TH1* hfit, int run)
     fit5->SetLineWidth(2);
     fit5->Draw("same");
     
-    printf("Chi^2:%10.4f Gain:%10.4f Unc:%10.4f MPV:%10.4f Unc:%10.4f", fit5->GetChisquare(), fit5->GetParameter(7), fit5->GetParError(7), fit5->GetParameter(11), fit5->GetParError(11));
-    printf("  Run: %i Hname: %s\n",run, hfit->GetName());
+    //printf("Chi^2:%10.4f Gain:%10.4f Unc:%10.4f MPV:%10.4f Unc:%10.4f", fit5->GetChisquare(), fit5->GetParameter(7), fit5->GetParError(7), fit5->GetParameter(11), fit5->GetParError(11));
+    //printf("  Run: %i Hname: %s\n",run, hfit->GetName());
 
     //std::cout<<"ans: "<<hfit->GetName()<<"  "<<fit5->GetParameter(10)<<"  "<<fit5->GetParError(10)<<"   "<<fit5->GetParameter(6)<<std::endl;
-    //printf("Chi^2:%10.4f, P0:%10.4f, P1:%10.4f", fit5->GetChisquare(), fit5->GetParameter(0), fit5->GetParameter(1));
-    //printf(" P2:%10.4f, P3:%10.4f, P4:%10.4f, P5:%10.4f", fit5->GetParameter(2), fit5->GetParameter(3), fit5->GetParameter(4), fit5->GetParameter(5));
-    //printf(" P6:%10.4f, P7:%10.4f, P8:%10.4f, P9:%10.4f", fit5->GetParameter(6), fit5->GetParameter(7), fit5->GetParameter(8), fit5->GetParameter(9));
-    //printf(" P10:%10.4f, P11:%10.4f, P12:%10.4f, P13:%10.4f\n", fit5->GetParameter(10), fit5->GetParameter(11), fit5->GetParameter(12), fit5->GetParameter(13));
+    printf("Chi^2:%10.4f, P0:%10.4f, P1:%10.4f", fit5->GetChisquare(), fit5->GetParameter(0), fit5->GetParameter(1));
+    printf(" P2:%10.4f, P3:%10.4f, P4:%10.4f, P5:%10.4f", fit5->GetParameter(2), fit5->GetParameter(3), fit5->GetParameter(4), fit5->GetParameter(5));
+    printf(" P6:%10.4f, P7:%10.4f, P8:%10.4f, P9:%10.4f", fit5->GetParameter(6), fit5->GetParameter(7), fit5->GetParameter(8), fit5->GetParameter(9));
+    printf(" P10:%10.4f, P11:%10.4f, P12:%10.4f, P13:%10.4f\n", fit5->GetParameter(10), fit5->GetParameter(11), fit5->GetParameter(12), fit5->GetParameter(13));
     hfit->GetYaxis()->SetTitle("Events /fC");
     hfit->GetXaxis()->SetTitle("Charge [fC]");
     hfit->SetTitleOffset(1,"X");
@@ -302,7 +302,7 @@ void fitSPEMIP(TH1* hfit, int run)
     CMSPrelim1->SetNDC();
     CMSPrelim1->SetTextFont(62);
 
-    TLatex* testbeam = new TLatex(0.95, 0.91, "Testbeam 2017");
+    TLatex* testbeam = new TLatex(0.95, 0.91, "HB Testbeam 2017");
     testbeam->SetNDC();
     testbeam->SetTextFont(42);
     testbeam->SetTextAlign(31);
@@ -321,7 +321,7 @@ void fitSPEMIP(TH1* hfit, int run)
     int iEta, iPhi, iDepth;
     //sscanf (hfit->GetName(),"beam_adc_%d_%d_%d", &iEta, &iPhi, &iDepth);
     //sscanf (hfit->GetName(),"adc_nosub_%d_%d_%d", &iEta, &iPhi, &iDepth);
-    sscanf (hfit->GetName(),"adc_nosub_constBin_%d_%d_%d", &iEta, &iPhi, &iDepth);
+    //sscanf (hfit->GetName(),"adc_nosub_constBin_%d_%d_%d", &iEta, &iPhi, &iDepth);
     sscanf (hfit->GetName(),"adc_nosub_binChris_%d_%d_%d", &iEta, &iPhi, &iDepth);
     //sscanf (hfit->GetName(),"ped_adc_%d_%d_%d", &iEta, &iPhi, &iDepth);
     sprintf (chan, "Channel: %d,%d,%d", iEta, iPhi, iDepth);
@@ -358,7 +358,7 @@ void fitSPEMIP(TH1* hfit, int run)
     Gain->Draw();
     
     char oname[128];
-    sprintf(oname, "%s_%i.pdf", hfit->GetName(), run);
+    sprintf(oname, "adcHist_%s_%i.pdf", hfit->GetName(), run);
     //sprintf(oname, "%s_SiPMRuns_3030to3475.pdf", hfit->GetName());
     //sprintf(oname, "%s_HBRuns_3526to3534.pdf", hfit->GetName());
     c1.Print(oname);
@@ -374,7 +374,8 @@ int main()
     //char fname[] = "theFile.root";
 
     //char fname[] = "muonHBRuns.root";
-    char fname[] = "../MipCalibration/analysis_run00%i_EMAP_AC07_01SEP2017_Phase1_HB.root";
+    char fname[] = "../MipCalibration/data/HBdata/analysis_run00%i_EMAP_AC07_01SEP2017_Phase1_HB.root";
+    //char fname[] = "../MipCalibration/ana_tb_out_run00%i_EMAP_AC07_01SEP2017_Phase1_HB.root";
     //char fname[] = "analysis_run%i_EMAP_AC07_17SEP2017_Phase1_HB_B904.root";
     //char fname[] = "analysis_run00%i_EMAP-6SEP2017_HBHE.root";
     
@@ -390,6 +391,7 @@ int main()
         if(!fin) continue;
     
         TDirectory* din = (TDirectory*)fin->Get("hcalADCHists");
+	//TDirectory* din = (TDirectory*)fin->Get("SortedHist/Chris_noPS_hist");
 	//TDirectory* din = (TDirectory*)fin;
         
         TIter next(din->GetListOfKeys());
@@ -401,11 +403,11 @@ int main()
 
 	  //if(strstr(obj->GetName(), "beam_adc_6") != nullptr || strstr(obj->GetName(), "beam_adc_9") != nullptr || strstr(obj->GetName(), "beam_adc_11") != nullptr || strstr(obj->GetName(), "beam_adc_13") != nullptr)
 	    //if(strstr(obj->GetName(), "adc_nosub_6") != nullptr || strstr(obj->GetName(), "adc_nosub_9") != nullptr || strstr(obj->GetName(), "adc_nosub_11") != nullptr || strstr(obj->GetName(), "adc_nosub_13") != nullptr)
-	  if((strstr(obj->GetName(), "adc_nosub_binChris") != nullptr) && (iEta != 5) && (iPhi == 5) && (iDepth == 2 || iDepth == 3)) 
+	  if((strstr(obj->GetName(), "adc_nosub_binChris") != nullptr) && (iEta == 6 || iEta == 9 || iEta == 11 || iEta == 13) && (iPhi == 5) && (iDepth == 2 || iDepth == 3)) 
 	    //if(strstr(obj->GetName(), "ped_adc_6") != nullptr || strstr(obj->GetName(), "ped_adc_9") != nullptr || strstr(obj->GetName(), "ped_adc_11") != nullptr || strstr(obj->GetName(), "ped_adc_13") != nullptr)
             {
                 TH1* htofit = (TH1*)din->Get(obj->GetName());
-                if(htofit->GetMean() > 100)//50
+                if(htofit->GetMean() > 150)//50
                 {
 		    //printf("Hname: %s/n", htofit->GetName());
                     //h = htofit;
