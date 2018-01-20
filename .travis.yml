@@ -4,15 +4,11 @@ language: cpp
 
 env:
   global:
-    - GH_REPO_NAME: FitTestBeamData2017
-    - DOXYFILE: $TRAVIS_BUILD_DIR/Doxyfile
-    - GH_REPO_REF: github.com/cmadrid1/FitTestBeamData2017.git
-    - TARGET_BRANCH: master
-    - secure: "NaC04+uMsQ3SpLwyQcCVvCMFvExgGrVTDc4CplYYq4cTrE77L4cQ3MlbGaasjGcAfo9Umglgd6UHjJuSgcNgu5dUYp22HOzb7vxOFG1XpJIOz3p/01d8+K9wv0sz5MvxlekI8G6F/42FCGvQwJRhu/C5ydtjIf6GBwg24PvHxgEKhzDZtXBaOoMAXdjss9SLuYVvUijc2dTfzsnkiZ233FwlRbEKeUjHok3Ugc/w87WwTdsOHIXdJJAtC8qaGkppd6Q+GciDz7RKWsS9AFlPzpxo3ypWS9BgGQ6k3rNITIaFg25HDfZLaseu2PJQeAOYCOSjGdRNvgT0NYIFAot32GWJkJ19hn6D0fbIFXsTl/vCrEUuC2JQbmIA9pCWn9jvPvrtgvYAFwcm1TDH5Dj9bftwUv9C2yYvIdez8z9GKQIvHeAnYrx2oTylf2vaK2so8Ayc9yEiLA+Oh+74ZO6a2Z6ZH/cIOWIZP2dmXmbRtBElLemz4/8fmVq2oacgLu2o0EF7nCqwdsOq9ljTG9VnU417CcQ4oz8Y5ETVxocDWcAgNUEev4cyZcIi2ep9TTFD8ZDP1qhRi+f9lx8J2LBycnx34Wt7JuZAZ86ZwbzbL0Gul68/MeM71dLtrsQTJ3pNHr4jCiyXj3Im2cSltxKwN4v00hGmGC/0F6c7VLsdyrk="
+  - DOCKER_CONTAINER: cmssw/slc6-base:latest
 
 branches:
   only:
-    - /.*/
+  - /.*/
 
 before_install:
 - sudo apt-get -qq update
@@ -29,25 +25,11 @@ before_install:
 - sudo cvmfs_config chksetup
 - sudo docker pull $DOCKER_CONTAINER
 
-addons:
-  apt:
-    packages:
-      - doxygen
-      - doxygen-doc
-      - doxygen-latex
-      - doxygen-gui
-      - graphviz
-
 compiler:
-  - gcc
+- gcc
 
 script:
-  - g++ -g -O3 `root-config --glibs --cflags` fittingClass/mipFitsSiPM.C -o mipFitsSiPM
-
-after_success:
-  - cd $TRAVIS_BUILD_DIR
-  - chmod +x generateDocumentationAndDeploy.sh
-  - ./generateDocumentationAndDeploy.sh
+- sudo docker run -v /cvmfs:/cvmfs -v $TRAVIS_BUILD_DIR:$TRAVIS_BUILD_DIR $DOCKER_CONTAINER travisScript.sh $TRAVIS_BUILD_DIR
 
 notifications:
-email: false
+  email: false
