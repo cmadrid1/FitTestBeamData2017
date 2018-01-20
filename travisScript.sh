@@ -1,4 +1,5 @@
 #!/bin/bash
+set -ex
 
 cd $1
 #source /cvmfs/sft.cern.ch/lcg/views/LCG_89/x86_64-slc6-gcc62-opt/setup.sh
@@ -11,3 +12,4 @@ eval `scramv1 runtime -sh`
 cd -
 
 g++ -g -O3 `root-config --glibs --cflags` fittingClass/mipFitsSiPM.C -o mipFitsSiPM
+echo "Yeah Buddy"
