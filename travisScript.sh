@@ -8,7 +8,9 @@ source /cvmfs/cms.cern.ch/cmsset_default.sh
 export SCRAM_ARCH=slc6_amd64_gcc630
 scramv1 project CMSSW CMSSW_9_3_3
 cd CMSSW_9_3_3/src
+set +x
 eval `scramv1 runtime -sh`
+set -x
 cd -
 
 g++ -g -O3 `root-config --glibs --cflags` fittingClass/mipFitsSiPM.C -o mipFitsSiPM
