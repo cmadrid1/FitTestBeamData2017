@@ -29,6 +29,7 @@ compiler:
 - gcc
 
 script:
+- chmod -x travisScript.sh
 - sudo docker run -v /cvmfs:/cvmfs -v $TRAVIS_BUILD_DIR:$TRAVIS_BUILD_DIR $DOCKER_CONTAINER travisScript.sh $TRAVIS_BUILD_DIR
 
 notifications:
