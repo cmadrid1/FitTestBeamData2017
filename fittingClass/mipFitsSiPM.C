@@ -22,14 +22,32 @@ void fitSPEMIP(TH1* hfit, int run)
     gPad->SetBottomMargin(0.12);
     gPad->SetRightMargin(0.05);
     gPad->SetLeftMargin(0.14);
+    TLegend* leg = new TLegend(0.65, 0.8, 0.99, 0.9);
+    leg->SetTextSize(0.03);
+    leg->SetBorderSize(0);
+    leg->SetFillStyle(0);
+    leg->AddEntry(hfit,"Testbeam Data","l");
     //c1.SetLogx();
     //c1.SetLogy();
     //hfit->GetXaxis()->SetRangeUser(10, 400);
-    hfit->GetXaxis()->SetRangeUser(10, 4000);
+    //hfit->GetXaxis()->SetRangeUser(10, 4000);
     //hfit->SetMinimum(0.0000001);
     //hfit->SetMaximum(200);
+    hfit->SetStats(false);
+    hfit->SetTitle("Fit Testbeam Data");
+    hfit->SetLineColor(kBlack);
+    hfit->GetYaxis()->SetTitle("A.U.");
+    hfit->GetXaxis()->SetTitle("Time");
+    hfit->SetTitleOffset(1,"X");
+    hfit->SetTitleOffset(1.2,"Y");
+    hfit->SetTitleSize(0.05,"X");
+    hfit->SetTitleSize(0.05,"Y");
+    hfit->Draw("hist E");
+    leg->Draw();
     
-    hfit->Draw("hist");
+    //////////////////////
+    //Fitting info
+    //////////////////////
                                                        //////////////Parameter Info////////////////////////////////
     double min1   =     0; double max1   =   10;       //p[1] : Total MIP peak area------------//                //
     double min2   =     0; double max2   =  150;       //p[2] : Most probable value of Landau--//(MPV)           //
@@ -39,7 +57,7 @@ void fitSPEMIP(TH1* hfit, int run)
     double set2   =   113;
     double set3   =   0.5;
     double set4   = 0.001;
-    double fitmin =   105; double fitmax = 250;
+    double fitmin =   100; double fitmax = 200;
     
     TF1* fit1 = new TF1("Lang", langaufun, 0.0, 100000.0, 4);
     fit1->SetParLimits(10, min1, max1); 
@@ -51,95 +69,23 @@ void fitSPEMIP(TH1* hfit, int run)
     fit1->SetParameter(2, set3);
     fit1->SetParameter(3, set4);
     fit1->SetLineWidth(2);
-    fit1->SetLineColor(kBlack);
+    fit1->SetLineColor(kRed);
     hfit->Fit(fit1, "RQML", "", fitmin, fitmax);
     fit1->Draw("same");
+    leg->AddEntry(fit1,"Fit","l");
 
     printf(
            "Chi^2:%10.4f, P1:%10.4f, P2:%10.4f, P3:%10.4f, P4:%10.4f\n",
            fit1->GetChisquare(), fit1->GetParameter(0), fit1->GetParameter(1), fit1->GetParameter(2), fit1->GetParameter(3)
            );
 
-    hfit->GetYaxis()->SetTitle("Time [ns]");
-    hfit->GetXaxis()->SetTitle("A.U.");
-    hfit->SetTitleOffset(1,"X");
-    hfit->SetTitleOffset(1.2,"Y");
-    hfit->SetTitleSize(0.05,"X");
-    hfit->SetTitleSize(0.05,"Y");
-        
-    //Make Plots Pretty
-    //hfit->SetStats(false);
-    //hfit->SetTitle("");
-    //
-    //TLatex* CMSPrelim1 = new TLatex(0.14, 0.91, "CMS #scale[0.9]{#font[52]{Preliminary}}");
-    //CMSPrelim1->SetNDC();
-    //CMSPrelim1->SetTextFont(62);
-    //
-    //TLatex* testbeam = new TLatex(0.95, 0.91, "HB Testbeam 2017");
-    //testbeam->SetNDC();
-    //testbeam->SetTextFont(42);
-    //testbeam->SetTextAlign(31);
-    //
-    //TLatex* SiPMTitle = new TLatex(0.93, 0.86, "SiPM (Silicon Photomultiplier)");
-    //SiPMTitle->SetNDC();
-    //SiPMTitle->SetTextFont(42);
-    //SiPMTitle->SetTextAlign(32);
-    //
-    //TLatex* Muon = new TLatex(0.93, 0.81, "Parasitic Muons");
-    //Muon->SetNDC();
-    //Muon->SetTextFont(42);
-    //Muon->SetTextAlign(32);
-    //
-    //char chan [100];
-    //int iEta, iPhi, iDepth;
-    //sscanf (hfit->GetName(),"adc_nosub_binChris_%d_%d_%d", &iEta, &iPhi, &iDepth);
-    //sprintf (chan, "Channel: %d,%d,%d", iEta, iPhi, iDepth);
-    //
-    //TLatex* channel = new TLatex(0.93, 0.86, chan);
-    //channel->SetNDC();
-    //channel->SetTextFont(42);
-    //channel->SetTextAlign(32);
-    //
-    //char mpv [100];
-    //float intmpv = fit1->GetParameter(11);
-    //sprintf (mpv,"MPV: %0.3f", intmpv);
-    //
-    //TLatex* MPV = new TLatex(0.93, 0.8, mpv);
-    //MPV->SetNDC();
-    //MPV->SetTextFont(42);
-    //MPV->SetTextAlign(31);
-    //
-    //char gain [100];
-    //float intgain = fit1->GetParameter(7);
-    //sprintf (gain,"Gain: %0.3f", intgain);
-    //
-    //TLatex* Gain = new TLatex(0.93, 0.75, gain);
-    //Gain->SetNDC();
-    //Gain->SetTextFont(42);
-    //Gain->SetTextAlign(31);
-    //
-    //CMSPrelim1->Draw();
-    //testbeam->Draw();
-    ////SiPMTitle->Draw();
-    ////Muon->Draw();
-    //channel->Draw();
-    //MPV->Draw();
-    //Gain->Draw();
-    
-    char oname[128];
-    sprintf(oname, "adcHist_%s_%i.pdf", hfit->GetName(), run);
-    c1.Print(oname);
+    c1.Print("FittedPlot.pdf");
 }
 
 void mipFitsSiPM()
 {
     gROOT->SetStyle("Plain");    
-        
-    char fname[] = "10-29.root";
-    
-    TFile *fin = TFile::Open(fname);
-    
-    TObject *obj;
+    TFile *fin = TFile::Open("10-29.root");
     TH1* htofit = (TH1*)fin->Get("diff");
     fitSPEMIP(htofit, 1);
 }
