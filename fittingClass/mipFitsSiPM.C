@@ -42,6 +42,7 @@ void fitSPEMIP(TH1* hfit, int run)
     hfit->SetTitleOffset(1.2,"Y");
     hfit->SetTitleSize(0.05,"X");
     hfit->SetTitleSize(0.05,"Y");
+    hfit->Rebin(2);
     hfit->Draw("hist E");
     leg->Draw();
     
@@ -70,7 +71,7 @@ void fitSPEMIP(TH1* hfit, int run)
     fit1->SetParameter(3, set4);
     fit1->SetLineWidth(2);
     fit1->SetLineColor(kRed);
-    hfit->Fit(fit1, "RQML", "", fitmin, fitmax);
+    hfit->Fit(fit1, "RQM", "", fitmin, fitmax);
     fit1->Draw("same");
     leg->AddEntry(fit1,"Fit","l");
 
