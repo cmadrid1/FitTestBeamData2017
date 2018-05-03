@@ -43,9 +43,14 @@ Double_t langaufun(Double_t *x, Double_t *par) {
       Double_t fland;
       Double_t sum = 0.0;
       Double_t xlow,xupp;
-      Double_t step;
+  Double_t step;
       Double_t i;
 
+      TH1F* hello(0x0);
+      
+      
+aplacetogo:
+      
       // MP shift correction
       mpc = par[1] - mpshift * par[0];
 
@@ -55,6 +60,8 @@ Double_t langaufun(Double_t *x, Double_t *par) {
 
       step = (xupp-xlow) / np;
 
+      goto aplacetogo;
+      
       // Convolution integral of Landau and Gaussian by sum
       for(i=1.0; i<=np/2; i++) {
          xx = xlow + (i-.5) * step;
